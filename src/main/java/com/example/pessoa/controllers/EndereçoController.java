@@ -84,13 +84,21 @@ public class EndereçoController {
     ) {
         Optional<Endereço> existeEndereco = endereçoRepository.findById(id);
 
-        if(existeEndereco.isEmpty()){
-            return ResponseEntity.notFound().build();
+        if(existeEndereco.get().getPessoa() == null){
+            endereçoRepository.deleteById(existeEndereco.get().getId());
+
+            return ResponseEntity.ok().body("Endereço deletado");
         }
 
         if(existeEndereco.get().getPessoa().getEnderecos().size() < 2){
             return ResponseEntity.badRequest().body("Se você deletar esse endereço " + 
             existeEndereco.get().getPessoa().getNome() + " vai ficar sem endereços");
+        }
+
+        if(existeEndereco.get().getPessoa().getEnderecoFavorito() == null){
+            endereçoRepository.deleteById(existeEndereco.get().getId());
+
+            return ResponseEntity.ok().body("Endereço deletado");
         }
 
         if(existeEndereco.get().getPessoa().getEnderecoFavorito().getId() == id){

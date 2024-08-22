@@ -3,6 +3,8 @@ package com.example.pessoa.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +34,9 @@ public class PessoaController {
     final EndereçoRepository endereçoRepository;
 
     @GetMapping
-    public List<Pessoa> listPessoas(){
-        return pessoaRepository.findAll();
+    public Page<Pessoa> listPessoas(){
+        PageRequest pageable = PageRequest.of(0, 2);
+        return pessoaRepository.findAll(pageable);
     }
 
     @GetMapping("/{id}")
@@ -72,7 +75,9 @@ public class PessoaController {
         );
         
         enderecosRequest.forEach(endereco -> {
-            endereco.addPessoa(novaPessoa);
+            if(endereco.getPessoa() == null){
+                endereco.addPessoa(novaPessoa);   
+            }
         });
 
         return ResponseEntity.ok(pessoaRepository.save(novaPessoa));
