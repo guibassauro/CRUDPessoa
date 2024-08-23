@@ -3,8 +3,6 @@ package com.example.pessoa.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +20,6 @@ import com.example.pessoa.entities.requests.UpdateFavoritoRequest;
 import com.example.pessoa.entities.requests.UpdatePessoaRequest;
 import com.example.pessoa.repositories.EndereçoRepository;
 import com.example.pessoa.repositories.PessoaRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,10 +31,10 @@ public class PessoaController {
     final EndereçoRepository endereçoRepository;
 
     @GetMapping
-    public Page<Pessoa> listPessoas(){
-        PageRequest pageable = PageRequest.of(0, 2);
-        return pessoaRepository.findAll(pageable);
+    public ResponseEntity<Object> getPessoas(){
+        return ResponseEntity.ok().body(pessoaRepository.findAll());
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getIdadeDaPessoa(
