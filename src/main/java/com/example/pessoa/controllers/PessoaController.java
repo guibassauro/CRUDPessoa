@@ -56,6 +56,15 @@ public class PessoaController {
     public ResponseEntity<Object> createPessoa(
         @RequestBody CreatePessoaRequest createPessoa
     ) {
+
+        for(long endereco_id : createPessoa.getEnderecos_id()){
+            Optional<Endereço> existeEndereco = endereçoRepository.findById(endereco_id);
+
+            if(existeEndereco.isEmpty()){
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
         List<Endereço> enderecosRequest = endereçoRepository.findAllById(createPessoa.getEnderecos_id());
 
         if(enderecosRequest.isEmpty()){
@@ -85,6 +94,14 @@ public class PessoaController {
         @PathVariable Long id, @RequestBody UpdatePessoaRequest updatePessoa
     ) {
 
+        for(long endereco_id : updatePessoa.getEnderecos_id()){
+            Optional<Endereço> existeEndereco = endereçoRepository.findById(endereco_id);
+
+            if(existeEndereco.isEmpty()){
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
         Optional<Pessoa> existePessoa = pessoaRepository.findById(id);
 
         if(existePessoa.isEmpty()){
@@ -102,12 +119,15 @@ public class PessoaController {
         }
 
         Pessoa atualizaPessoa = new Pessoa();
+        Endereço enderecoFavorito = existePessoa.get().getEnderecoFavorito();
 
         atualizaPessoa.setId(id);
         atualizaPessoa.setNome(updatePessoa.getNome());
         atualizaPessoa.setDataDeNascimento(updatePessoa.getDataDeNascimento());
         atualizaPessoa.setCpf(updatePessoa.getCpf());
         atualizaPessoa.setEnderecos(updateEnderecos);
+        atualizaPessoa.setEnderecoFavorito(enderecoFavorito);
+
         
         updateEnderecos.forEach(endereco -> {
             endereco.addPessoa(atualizaPessoa);
