@@ -1,7 +1,5 @@
 package com.example.pessoa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,14 +30,5 @@ public class Endereço {
 
     @Column
     private String cep;
-
-    @ManyToOne
-    @JoinColumn(name = "pessoa_id")
-    @JsonIgnoreProperties("enderecos")
-    private Pessoa pessoa;
-    
-    public void addPessoa(final Pessoa pessoa){
-        this.pessoa = pessoa;
-    }
 
 }

@@ -1,6 +1,8 @@
 package com.example.pessoa.services.impl;
 
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.pessoa.entities.Endereço;
 import com.example.pessoa.entities.Pessoa;
-import com.example.pessoa.entities.requests.CreateEnderecoRequest;
-import com.example.pessoa.entities.requests.UpdateEnderecoRequest;
+import com.example.pessoa.entities.requests.CriarEnderecoRequest;
+import com.example.pessoa.entities.requests.AtualizarEnderecoRequest;
 import com.example.pessoa.repositories.EndereçoRepository;
 import com.example.pessoa.repositories.PessoaRepository;
 import com.example.pessoa.services.EnderecoService;
@@ -29,7 +31,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     }
 
     @Override
-    public ResponseEntity<Object> criaEndereco(CreateEnderecoRequest criaEndereco){
+    public ResponseEntity<Object> criaEndereco(CriarEnderecoRequest criaEndereco){
         
         Endereço novoEndereco = new Endereço(
             null,
@@ -37,8 +39,7 @@ public class EnderecoServiceImpl implements EnderecoService {
             criaEndereco.getNumero(),
             criaEndereco.getCidade(),
             criaEndereco.getEstado(),
-            criaEndereco.getCep(),
-            null
+            criaEndereco.getCep()
         );
 
         endereçoRepository.save(novoEndereco);
@@ -48,15 +49,10 @@ public class EnderecoServiceImpl implements EnderecoService {
     }
 
     @Override
-    public ResponseEntity<Object> atualizaEndereco(Long id, UpdateEnderecoRequest atualizaEndereco){
+    public ResponseEntity<Object> atualizaEndereco(Long id, AtualizarEnderecoRequest atualizaEndereco){
         if(!confereEndereco(id)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                  .body("O endereço " + id + " não foi encontrado");
-        }
-
-        if(atualizaEndereco.getPessoa_id() != null && !conferePessoa(atualizaEndereco.getPessoa_id())){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                             .body("A pessoa " + atualizaEndereco.getPessoa_id() + " não foi encontrada");
         }
 
         Endereço enderecoAtualizado = endereçoRepository.findById(id).get();
@@ -66,13 +62,6 @@ public class EnderecoServiceImpl implements EnderecoService {
         enderecoAtualizado.setCidade(atualizaEndereco.getCidade());
         enderecoAtualizado.setEstado(atualizaEndereco.getEstado());
         enderecoAtualizado.setCep(atualizaEndereco.getCep());
-
-        if(atualizaEndereco.getPessoa_id() == null){
-            enderecoAtualizado.setPessoa(null);
-        } else{
-            Pessoa pessoaAtualizada = pessoaRepository.findById(atualizaEndereco.getPessoa_id()).get();
-            enderecoAtualizado.setPessoa(pessoaAtualizada);
-        }
 
         endereçoRepository.save(enderecoAtualizado);
 
@@ -86,20 +75,19 @@ public class EnderecoServiceImpl implements EnderecoService {
                                  .body("O endereço " + id + " não foi encontrado");
         }
 
-        if(endereçoRepository.findById(id).get().getPessoa() == null){
-            endereçoRepository.deleteById(id);
-            return ResponseEntity.ok().body("Endereço deletado");
+        List<Pessoa> proprietarios = confereDonosDesteEndereco(id);
+        
+        for(Pessoa proprietario : proprietarios){
+            if(proprietario.getEnderecos().size() < 2){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Se você deletar este endereço " + 
+                                                        proprietario.getNome() + " vai ficar sem endereços");
+            }
         }
 
-        if(endereçoRepository.findById(id).get().getPessoa().getEnderecos().size() < 2){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                 .body("Se você deletar este endereço " +
-                                 endereçoRepository.findById(id).get().getPessoa().getNome() + 
-                                 " vai ficar sem endereços");
-        }
-
-        if(endereçoRepository.findById(id).get().getPessoa().getEnderecoFavorito().getId() == id){
-            endereçoRepository.findById(id).get().getPessoa().setEnderecoFavorito(null);
+        for(Pessoa proprietario : proprietarios){
+            if(proprietario.getEnderecoFavorito().getId() == id){
+                proprietario.setEnderecoFavorito(null);
+            }
         }
 
         endereçoRepository.deleteById(id);
@@ -127,5 +115,17 @@ public class EnderecoServiceImpl implements EnderecoService {
         }
 
         return true;
+    }
+
+    public List<Pessoa> confereDonosDesteEndereco(Long id){
+        List<Pessoa> proprietarios = new ArrayList<>();
+
+        for(Pessoa pessoa : pessoaRepository.findAll()){
+            if(pessoa.getEnderecos().contains(endereçoRepository.findById(id).get())){
+                proprietarios.add(pessoa);
+            }
+        }
+
+        return proprietarios;
     }
 }

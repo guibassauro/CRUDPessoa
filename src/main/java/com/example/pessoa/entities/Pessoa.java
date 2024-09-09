@@ -29,8 +29,7 @@ public class Pessoa {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    @OneToMany(mappedBy = "pessoa")
-    @JsonIgnoreProperties("pessoa")
+    @OneToMany
     private List<Endereço> enderecos;
 
     @OneToOne

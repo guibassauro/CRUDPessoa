@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.pessoa.entities.requests.CreateEnderecoRequest;
-import com.example.pessoa.entities.requests.UpdateEnderecoRequest;
+import com.example.pessoa.entities.requests.CriarEnderecoRequest;
+import com.example.pessoa.entities.requests.AtualizarEnderecoRequest;
 import com.example.pessoa.repositories.EndereçoRepository;
 import com.example.pessoa.repositories.PessoaRepository;
 import com.example.pessoa.services.EnderecoService;
@@ -29,27 +29,27 @@ public class EndereçoController {
     final EnderecoService enderecoService;
 
     @GetMapping
-    public ResponseEntity<Object> achaTodos(){
+    public ResponseEntity<Object> achaTodosOsEnderecos(){
         return enderecoService.achaTodos();
     }
 
     @PostMapping
-    public ResponseEntity<Object> createEndereco(
-        @RequestBody CreateEnderecoRequest createEndereco
+    public ResponseEntity<Object> criaNovoEndereco(
+        @RequestBody CriarEnderecoRequest criaEndereco
     ) {
-        return enderecoService.criaEndereco(createEndereco);
+        return enderecoService.criaEndereco(criaEndereco);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateEndereço(
-        @PathVariable Long id, @RequestBody UpdateEnderecoRequest updateEndereco
+    public ResponseEntity<Object> atualizaEnderecoPorId(
+        @PathVariable Long id, @RequestBody AtualizarEnderecoRequest atualizaEndereco
     ) {
-        return enderecoService.atualizaEndereco(id, updateEndereco);
+        return enderecoService.atualizaEndereco(id, atualizaEndereco);
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteEndereco(
+    public ResponseEntity<Object> deletaEnderecoPorId(
         @PathVariable Long id
     ) {
         return enderecoService.deletaEndereco(id);

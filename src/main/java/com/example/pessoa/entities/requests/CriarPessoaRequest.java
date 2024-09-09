@@ -1,5 +1,7 @@
 package com.example.pessoa.entities.requests;
 
+import java.util.List;
+
 import io.micrometer.common.lang.NonNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,14 +10,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateEnderecoRequest {
+public class CriarPessoaRequest {
     
-    String rua;
-    String numero;
-    String cidade;
-    String estado;
-    String cep;
+    String nome;
+    String dataDeNascimento;
+    String cpf;
     @NonNull
-    Long pessoa_id;
-
+    List<Long> enderecos_id;
+    Long favEndereco_id;
 }

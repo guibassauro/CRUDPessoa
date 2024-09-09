@@ -1,5 +1,7 @@
 package com.example.pessoa.controllers;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.pessoa.entities.requests.CreatePessoaRequest;
-import com.example.pessoa.entities.requests.UpdateFavoritoRequest;
-import com.example.pessoa.entities.requests.UpdatePessoaRequest;
+import com.example.pessoa.entities.requests.CriarPessoaRequest;
+import com.example.pessoa.entities.Pessoa;
+import com.example.pessoa.entities.requests.AtualizarFavoritoRequest;
+import com.example.pessoa.entities.requests.AtualizarPessoaRequest;
 import com.example.pessoa.repositories.EndereçoRepository;
 import com.example.pessoa.repositories.PessoaRepository;
 import com.example.pessoa.services.PessoaService;
@@ -29,13 +32,13 @@ public class PessoaController {
     final PessoaService pessoaService;
 
     @GetMapping
-    public ResponseEntity<Object> listaTodosAsPessoa(){
-        return pessoaService.achaTodos();
+    public ResponseEntity<Page<Pessoa>> achaTodasAsPessoas(Pageable pageable){
+        return ResponseEntity.ok(pessoaRepository.findAll(pageable));
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getIdadeDaPessoa(
+    public ResponseEntity<Object> getIdadeDaPessoaPorId(
         @PathVariable Long id
     ) {
         return pessoaService.pegaIdadeDaPessoaPorId(id);
@@ -43,27 +46,27 @@ public class PessoaController {
 
     @PostMapping
     public ResponseEntity<Object> criaPessoa(
-        @RequestBody CreatePessoaRequest createPessoa
+        @RequestBody CriarPessoaRequest createPessoa
     ) {
         return pessoaService.criaPessoa(createPessoa);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updatePessoa(
-        @PathVariable Long id, @RequestBody UpdatePessoaRequest updatePessoa
+    public ResponseEntity<Object> atualizaPessoa(
+        @PathVariable Long id, @RequestBody AtualizarPessoaRequest updatePessoa
     ) {
         return pessoaService.atualizaPessoa(id, updatePessoa);
     }
 
     @PutMapping("favorito/{id}")
-    public ResponseEntity<Object> adicionaFavorito(
-        @PathVariable Long id, @RequestBody UpdateFavoritoRequest updateFavorito
+    public ResponseEntity<Object> adicionaEnderecoFavoritoPorId(
+        @PathVariable Long id, @RequestBody AtualizarFavoritoRequest updateFavorito
     ){
         return pessoaService.adicionaEnderecoFavoritoParaPessoa(id, updateFavorito);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletePessoa(
+    public ResponseEntity<Object> deletaPessoaPorId(
         @PathVariable Long id
     ) {
         return pessoaService.deletaPessoa(id);

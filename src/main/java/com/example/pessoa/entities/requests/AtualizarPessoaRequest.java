@@ -10,12 +10,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePessoaRequest {
+public class AtualizarPessoaRequest {
     
     String nome;
     String dataDeNascimento;
     String cpf;
+    
     @NonNull
     List<Long> enderecos_id;
-    Long favEndereco_id;
+
+
 }

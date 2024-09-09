@@ -1,22 +1,25 @@
 package com.example.pessoa.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import com.example.pessoa.entities.requests.CreatePessoaRequest;
-import com.example.pessoa.entities.requests.UpdateFavoritoRequest;
-import com.example.pessoa.entities.requests.UpdatePessoaRequest;
+import com.example.pessoa.entities.requests.CriarPessoaRequest;
+import com.example.pessoa.entities.Pessoa;
+import com.example.pessoa.entities.requests.AtualizarFavoritoRequest;
+import com.example.pessoa.entities.requests.AtualizarPessoaRequest;
 
 public interface PessoaService {
 
-    ResponseEntity<Object> achaTodos();
+    Page<Pessoa> achaTodos(Pageable pageable);
 
     ResponseEntity<Object> pegaIdadeDaPessoaPorId(Long id);
 
-    ResponseEntity<Object> criaPessoa(CreatePessoaRequest criaPessoa);
+    ResponseEntity<Object> criaPessoa(CriarPessoaRequest criaPessoa);
 
-    ResponseEntity<Object> atualizaPessoa(Long id, UpdatePessoaRequest atualizaPessoa);
+    ResponseEntity<Object> atualizaPessoa(Long id, AtualizarPessoaRequest atualizaPessoa);
 
-    ResponseEntity<Object> adicionaEnderecoFavoritoParaPessoa(Long id, UpdateFavoritoRequest atualizaFavorito);
+    ResponseEntity<Object> adicionaEnderecoFavoritoParaPessoa(Long id, AtualizarFavoritoRequest atualizaFavorito);
 
     ResponseEntity<Object> deletaPessoa(Long id);
 }

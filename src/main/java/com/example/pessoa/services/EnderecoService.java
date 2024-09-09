@@ -2,17 +2,17 @@ package com.example.pessoa.services;
 
 import org.springframework.http.ResponseEntity;
 
-import com.example.pessoa.entities.requests.CreateEnderecoRequest;
-import com.example.pessoa.entities.requests.UpdateEnderecoRequest;
+import com.example.pessoa.entities.requests.CriarEnderecoRequest;
+import com.example.pessoa.entities.requests.AtualizarEnderecoRequest;
 
 
 public interface EnderecoService {
     
     ResponseEntity<Object> achaTodos();
 
-    ResponseEntity<Object> criaEndereco(CreateEnderecoRequest criaEndereco);
+    ResponseEntity<Object> criaEndereco(CriarEnderecoRequest criaEndereco);
     
-    ResponseEntity<Object> atualizaEndereco(Long id, UpdateEnderecoRequest atualizaEndereco);
+    ResponseEntity<Object> atualizaEndereco(Long id, AtualizarEnderecoRequest atualizaEndereco);
 
     ResponseEntity<Object> deletaEndereco(Long id);
 }
